@@ -1,0 +1,9 @@
+#server:
+#  port: 9090
+#  tomcat:
+#    uri-encoding: UTF-8
+#
+#spring:
+#  application:
+#    name: aibotgo
+#
