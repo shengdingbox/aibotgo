@@ -109,11 +109,8 @@ public abstract class AbstractLLMService {
                 String chatId = String.valueOf(response.get("chatId"));
                 log.info("返回数据结束了:{}", response);
                 String questionUuid = StringUtils.isNotBlank(params.getRegenerateQuestionUuid()) ? params.getRegenerateQuestionUuid() : UUID.randomUUID().toString().replace("-", "");
-                UsageResponse usageResponse = new UsageResponse();
-                usageResponse.setPrompt_tokens(assistantChatParams.getUserMessage().getContent().split("\r\n").length);
-                usageResponse.setCompletion_tokens(content.split("\r\n").length);
-                usageResponse.setTotal_tokens(content.split("\r\n").length + assistantChatParams.getUserMessage().getContent().split("\r\n").length);
-                String stopStreamToString = ChatSseResponse.stopStreamToString(chatId, MODEL_NAME, usageResponse);
+                String userMessage = assistantChatParams.getUserMessage().getContent();
+                String stopStreamToString = ChatSseResponse.stopStreamToString(chatId, MODEL_NAME, userMessage, content);
                 log.info("meta:" + stopStreamToString);
                 try {
                     params.getSseEmitter().send(stopStreamToString);

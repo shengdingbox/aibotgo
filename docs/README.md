@@ -6,10 +6,10 @@
 <span>[ 中文 | <a href="README_EN.md">English</a> ]</span>
 
 
-[![](https://img.shields.io/github/license/llm-red-team/kimi-free-api.svg)](LICENSE)
-![](https://img.shields.io/github/stars/llm-red-team/kimi-free-api.svg)
-![](https://img.shields.io/github/forks/llm-red-team/kimi-free-api.svg)
-![](https://img.shields.io/docker/pulls/vinlic/kimi-free-api.svg)
+[![](https://img.shields.io/github/license/shengdingbox/aibotgo.svg)](LICENSE)
+![](https://img.shields.io/github/stars/shengdingbox/aibotgo.svg)
+![](https://img.shields.io/github/forks/shengdingbox/aibotgo.svg)
+![](https://img.shields.io/docker/pulls/shengdingbox/aibotgo.svg)
 
 支持高速流式输出、支持多轮对话、支持联网搜索、支持智能体对话、支持长文档解读、支持图像OCR，零配置部署，多路token支持，自动清理会话痕迹。
 
@@ -462,4 +462,4 @@ keepalive_timeout 120;
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=LLM-Red-Team/kimi-free-api&type=Date)](https://star-history.com/#LLM-Red-Team/kimi-free-api&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=shengdingbox/aibotgo&type=Date)](https://star-history.com/#shengdingbox/aibotgo&Date)

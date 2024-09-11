@@ -13,6 +13,10 @@ public class ResponseMessage {
     public ResponseMessage(String content) {
         this.content = content;
     }
+    public ResponseMessage(String role,String content) {
+        this.role = role;
+        this.content = content;
+    }
 
 
 }

@@ -6,6 +6,8 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shengding.shengdingllm.cosntant.ChatMessageRoleEnum.USER;
+
 @Data
 public class ChatSseResponse {
 
@@ -31,8 +33,24 @@ public class ChatSseResponse {
         return JSONObject.toJSONString(chatSseResponse);
     }
 
-    public static String stopStreamToString(String id, String model, UsageResponse usageResponse) {
+    public static String stopStreamToString(String id, String model, String userMessage, String content) {
+        UsageResponse usageResponse = new UsageResponse();
+        usageResponse.setPrompt_tokens(userMessage.split("\r\n").length);
+        usageResponse.setCompletion_tokens(content.split("\r\n").length);
+        usageResponse.setTotal_tokens(content.split("\r\n").length + userMessage.split("\r\n").length);
         ChoicesResponse choicesResponse = new ChoicesResponse(true);
+        List<ChoicesResponse> list = new ArrayList<>();
+        list.add(choicesResponse);
+        ChatSseResponse chatSseResponse = new ChatSseResponse(id, model, list);
+        chatSseResponse.setUsage(usageResponse);
+        return JSONObject.toJSONString(chatSseResponse);
+    }
+    public static String chatString(String id, String model, String userMessage, String content) {
+        UsageResponse usageResponse = new UsageResponse();
+        usageResponse.setPrompt_tokens(userMessage.split("\r\n").length);
+        usageResponse.setCompletion_tokens(content.split("\r\n").length);
+        usageResponse.setTotal_tokens(content.split("\r\n").length + userMessage.split("\r\n").length);
+        ChoicesResponse choicesResponse = new ChoicesResponse(USER.getValue(),content);
         List<ChoicesResponse> list = new ArrayList<>();
         list.add(choicesResponse);
         ChatSseResponse chatSseResponse = new ChatSseResponse(id, model, list);

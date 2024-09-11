@@ -26,7 +26,7 @@ public class ChatController {
     private ChatService chatService;
 
     @PostMapping(value = "/chat/completions")
-    public ResponseEntity<?> completions(@RequestBody @Validated ChatRequest chatRequest) {
+    public Object completions(@RequestBody @Validated ChatRequest chatRequest) {
         String authorization = request.getHeader("authorization");
         if (authorization.contains("Bearer ")) {
             authorization = authorization.replace("Bearer ", "");
@@ -35,15 +35,14 @@ public class ChatController {
             throw new BaseException(ErrorCode.A_USER_NOT_AUTH.getCode(), "未登录");
 
         }
-        // 判断请求参数是否需要 SSE 流
-        boolean isSse = request.getParameter("stream") != null && request.getParameter("stream").equals("true");
         // 如果需要 SSE 流，则创建 SseEmitter 对象
         SseEmitter sseEmitter = new SseEmitter();
-        if (isSse) {
-            return ResponseEntity.ok().body(sseEmitter);
+        if (chatRequest.getStream()) {
+            chatService.completions(sseEmitter, authorization, chatRequest);
+            return sseEmitter;
         } else {
             // 如果不需要 SSE 流，则返回 JSON 对象
-            return ResponseEntity.ok(chatService.completions(sseEmitter, authorization, chatRequest));
+            return chatService.completions(sseEmitter, authorization, chatRequest);
         }
     }
 

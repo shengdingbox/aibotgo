@@ -93,7 +93,6 @@ public class KimiLLMService extends AbstractLLMService {
 
     @Override
     public void sendPrompt(AssistantChatParams assistantChatParams, BiConsumer<Object, Map<String, Object>> onUpdateResponse, Object callbackParam) {
-        checkAvailability();
         EventSource.Factory factory = EventSources.createFactory(client);
         JSONObject context = createChatContext(assistantChatParams.getMessageId());
         JSONObject jsonObject = new JSONObject();
@@ -120,7 +119,7 @@ public class KimiLLMService extends AbstractLLMService {
                 .build();
 
         // 自定义监听器
-        final String[] beginning = new String[]{};
+        final StringBuffer beginning = new StringBuffer();
         EventSourceListener eventSourceListener = new EventSourceListener() {
 
             @Override
@@ -134,10 +133,9 @@ public class KimiLLMService extends AbstractLLMService {
                 if ("search_plus".equals(jsonData.getString("event"))) {
                     String msgType = jsonData.getString("msg.type");
                     if ("start_res".equals(msgType)) {
-                        beginning[0] += "> 搜索中...\n";
+                        beginning.append("> 搜索中...\n");
                     } else if ("get_res".equals(msgType)) {
-                        beginning[0] += new StringBuilder().
-                                append("> 找到 ")
+                        beginning.append("> 找到 ")
                                 .append(jsonData.getInteger("msg.successNum"))
                                 .append(" 结果 [")
                                 .append(jsonData.getString("msg.title"))
@@ -147,13 +145,13 @@ public class KimiLLMService extends AbstractLLMService {
                     }
                 } else if ("cmpl".equals(jsonData.getString("event"))) {
                     String string = jsonData.getString("text");
-                    beginning[0] += string;
+                    beginning.append(string);
                     System.err.println(beginning);
                     onUpdateResponse.accept(callbackParam, createResponse(chatId, string, false));
                 } else if ("all_done".equals(jsonData.getString("event"))) {
-                    onUpdateResponse.accept(callbackParam, createResponse(chatId, beginning[0], true));
+                    onUpdateResponse.accept(callbackParam, createResponse(chatId, beginning.toString(), true));
                 } else {
-                    onUpdateResponse.accept(callbackParam, createResponse(chatId, beginning[0], false));
+                    onUpdateResponse.accept(callbackParam, createResponse(chatId, beginning.toString(), false));
                 }
                 super.onEvent(eventSource, id, type, eventData);
             }

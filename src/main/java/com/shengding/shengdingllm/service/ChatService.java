@@ -8,6 +8,7 @@ import com.shengding.shengdingllm.api.request.Message;
 import com.shengding.shengdingllm.cosntant.ChatMessageRoleEnum;
 import com.shengding.shengdingllm.helper.SSEEmitterHelper;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
+import com.shengding.shengdingllm.vo.ChatSseResponse;
 import com.shengding.shengdingllm.vo.LLMBuilderProperties;
 import com.shengding.shengdingllm.vo.SseAskParams;
 import com.zhouzifei.cache.FileCacheEngine;
@@ -37,7 +38,7 @@ public class ChatService {
      * @param authorization 当前用户信息
      * @param chatRequest   询问请求对象，包含对话和问题的详细信息
      */
-    public String completions(SseEmitter sseEmitter, String authorization, ChatRequest chatRequest) {
+    public ChatSseResponse completions(SseEmitter sseEmitter, String authorization, ChatRequest chatRequest) {
         // 记录进入方法的用户ID
         log.info("asyncCheckAndPushToClient,userId:{}", authorization);
         // 检查业务规则，如果不满足则返回
@@ -47,7 +48,8 @@ public class ChatService {
 
         // 初始化问题参数对象
         SseAskParams sseAskParams = new SseAskParams();
-        sseAskParams.setModelName(chatRequest.getModel().toUpperCase());
+        String modelName = chatRequest.getModel().toUpperCase();
+        sseAskParams.setModelName(modelName);
         sseAskParams.setSseEmitter(sseEmitter);
         //sseAskParams.setRegenerateQuestionUuid(askReq.getRegenerateQuestionUuid());
         sseAskParams.setApiKey(authorization);
@@ -77,25 +79,38 @@ public class ChatService {
                         .temperature(0.7)
                         .build()
         );
+        if (sseAskParams.getStream()) {
+            sseEmitterHelper.commonProcess(sseAskParams, (response, chatId) -> {
+                resetMessage(messages[0], chatId, chatRequest);
+            });
+        } else {
+            JSONObject jsonObject = sseEmitterHelper.commonProcess(sseAskParams);
+            String finalResponse = jsonObject.getString("response");
+            String chatId = jsonObject.getString("chatId");
+            String userMessage = JSONObject.toJSONString(messages[0]);
+            String stopStreamToString = ChatSseResponse.chatString(chatId,modelName ,userMessage ,finalResponse);
+            resetMessage(messages[0], chatId, chatRequest);
+            ChatSseResponse chatSseResponse = JSONObject.parseObject(stopStreamToString, ChatSseResponse.class);
+            return chatSseResponse;
+        }
         // 处理SSE发射器并保存AI响应后的数据
-        String commonProcess = sseEmitterHelper.commonProcess(sseAskParams, (response, chatId) -> {
-            FileCacheEngine fileCacheEngine = new FileCacheEngine();
-            messages[0] = messages[0].stream().filter(msg -> ChatMessageRoleEnum.USER.getValue().equals(msg.getRole())).collect(Collectors.toList());
-            String jsonString = JSONObject.toJSONString(messages[0]);
-            String md5Hex = DigestUtil.md5Hex(jsonString.getBytes(StandardCharsets.UTF_8));
-            fileCacheEngine.add(chatRequest.getModel(), md5Hex, chatId);
-            // 移除最后一个元素
-            if (!messages[0].isEmpty()) {
-                messages[0].remove(messages[0].size() - 1);
-            }
-            String jsonStringAfter = JSONObject.toJSONString(messages[0]);
-            String md5HexAfter = DigestUtil.md5Hex(jsonStringAfter.getBytes(StandardCharsets.UTF_8));
-            fileCacheEngine.remove(chatRequest.getModel(), md5HexAfter);
-            System.out.println("1111" + response + "122" + chatId);
-        });
-        return commonProcess;
+        return null;
     }
 
+    public void resetMessage(List<Message> messages, String chatId, ChatRequest chatRequest){
+        FileCacheEngine fileCacheEngine = new FileCacheEngine();
+        messages = messages.stream().filter(msg -> ChatMessageRoleEnum.USER.getValue().equals(msg.getRole())).collect(Collectors.toList());
+        String jsonString = JSONObject.toJSONString(messages);
+        String md5Hex = DigestUtil.md5Hex(jsonString.getBytes(StandardCharsets.UTF_8));
+        fileCacheEngine.add(chatRequest.getModel(), md5Hex, chatId);
+        // 移除最后一个元素
+        if (!messages.isEmpty()) {
+            messages.remove(messages.size() - 1);
+        }
+        String jsonStringAfter = JSONObject.toJSONString(messages);
+        String md5HexAfter = DigestUtil.md5Hex(jsonStringAfter.getBytes(StandardCharsets.UTF_8));
+        fileCacheEngine.remove(chatRequest.getModel(), md5HexAfter);
+    }
     private String getQuestionUuid(ChatRequest chatRequest) {
         List<Message> messages = chatRequest.getMessages().stream().filter(message -> ChatMessageRoleEnum.USER.getValue().equals(message.getRole())).collect(Collectors.toList());
         // 移除最后一个元素

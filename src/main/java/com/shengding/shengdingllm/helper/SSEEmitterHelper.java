@@ -33,35 +33,16 @@ public class SSEEmitterHelper {
      * @param sseAskParams 提问参数，包含问题内容及模型选择等信息
      * @param consumer     消费型接口，用于处理提问后的回复，包含回复内容、提示元数据和答案元数据
      */
-    public String commonProcess(SseAskParams sseAskParams, TriConsumer<String, String> consumer) {
+    public void commonProcess(SseAskParams sseAskParams, TriConsumer<String, String> consumer) {
         // 注册SSE事件回调，用于跟踪提问状态
         String askingKey = registerSseEventCallBack(sseAskParams);
 
         // 根据提问的模型名称选择对应的LLM服务，并进行普通聊天提问
-        AbstractLLMService abstractLLMService = llmContext.getLLMService(sseAskParams.getModelName(),sseAskParams.getApiKey());
-        if (sseAskParams.getStream()) {
-            abstractLLMService.commonChat(sseAskParams, (response, chatId) -> {
-                try {
-                    // 处理LLM服务返回的提问结果
-                    consumer.accept((String) response, chatId);
-                } catch (Exception e) {
-                    // 记录处理过程中的异常
-                    log.error("commonProcess error", e);
-                } finally {
-                    // 回答结束后，删除提问状态跟踪键
-                    RateLimitHelper.expireCacheMap.remove(askingKey);
-                }
-            });
-        } else {
-            R<String> chat = abstractLLMService.chat(sseAskParams);
+        AbstractLLMService abstractLLMService = llmContext.getLLMService(sseAskParams.getModelName(), sseAskParams.getApiKey());
+        abstractLLMService.commonChat(sseAskParams, (response, chatId) -> {
             try {
                 // 处理LLM服务返回的提问结果
-                String data = chat.getData();
-                JSONObject jsonObject = JSONObject.parseObject(data);
-                String finalResponse = jsonObject.getString("response");
-                String string = jsonObject.getString("chatId");
-                consumer.accept(finalResponse, string);
-                return string;
+                consumer.accept((String) response, chatId);
             } catch (Exception e) {
                 // 记录处理过程中的异常
                 log.error("commonProcess error", e);
@@ -69,6 +50,26 @@ public class SSEEmitterHelper {
                 // 回答结束后，删除提问状态跟踪键
                 RateLimitHelper.expireCacheMap.remove(askingKey);
             }
+        });
+    }
+
+    /**
+     * 处理普通提问(非流模式)
+     *
+     * @param sseAskParams 提问参数，包含问题内容及模型选择等信息
+     */
+    public JSONObject commonProcess(SseAskParams sseAskParams) {
+        // 根据提问的模型名称选择对应的LLM服务，并进行普通聊天提问
+        AbstractLLMService abstractLLMService = llmContext.getLLMService(sseAskParams.getModelName(), sseAskParams.getApiKey());
+        R<String> chat = abstractLLMService.chat(sseAskParams);
+        try {
+            // 处理LLM服务返回的提问结果
+            String data = chat.getData();
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            return jsonObject;
+        } catch (Exception e) {
+            // 记录处理过程中的异常
+            log.error("commonProcess error", e);
         }
         return null;
     }

@@ -1,8 +1,6 @@
 package com.shengding.shengdingllm.vo;
 
-import com.shengding.shengdingllm.api.request.Message;
 import lombok.Data;
-import org.apache.commons.lang.StringUtils;
 
 @Data
 public class ChoicesResponse {
@@ -12,6 +10,9 @@ public class ChoicesResponse {
 
     public ChoicesResponse(String content) {
         this.delta = new ResponseMessage(content);
+    }
+    public ChoicesResponse(String role,String content) {
+        this.delta = new ResponseMessage(role,content);
     }
 
     public ChoicesResponse(Boolean isStop) {
