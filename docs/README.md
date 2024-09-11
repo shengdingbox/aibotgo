@@ -17,6 +17,43 @@
 
 还有以下八个free-api欢迎关注：
 
+
+
+### 支持的 AI
+
+| AI 机器人                                                                         | API  | 文件上传  | 说明                                      |
+|--------------------------------------------------------------------------------|------|-------|-----------------------------------------|
+| [360 智脑](https://ai.360.cn/)                                                   | 支持   | 无     | todo                                    |
+| [Character.AI](https://character.ai/)                                          | 支持   | 无     | todo                                    |
+| [智谱清言(ChatGLM)](https://chatglm.cn/)                                           | 支持   | 无 API |                                         |
+| [ChatGPT](https://chat.openai.com)                                             | 支持   | 支持    | 包含 Web Browsing、Azure OpenAI service    |
+| [Claude](https://www.anthropic.com/claude)                                     | 支持   | 支持    | todo                                    |
+| [Code Llama](https://ai.meta.com/blog/code-llama-large-language-model-coding/) | 支持   | 无 API | todo                                    |
+| [Copilot](https://copilot.microsoft.com/)                                      | 支持   | 无 API | todo                                    |
+| [得到学习助手](https://ai.dedao.cn/)                                                 | 即将推出 | 无 API | todo                                    |
+| [Falcon 180B](https://huggingface.co/tiiuae/falcon-180B-chat)                  | 支持   | 无 API | todo                                    |
+| [Gemini](https://gemini.google.com/)                                           | 支持   | 支持    | todo                                    |
+| [Gemma 2B & 7B](https://blog.google/technology/developers/gemma-open-models/)  | 支持   | 无     | todo                                    |
+| [Gradio](https://gradio.app/)                                                  | 支持   | 无 API | 用于 Hugging Face space 或自己部署的模型     todo |
+| [HuggingChat](https://huggingface.co/chat/)                                    | 支持   | 无 API | todo                                    |
+| [讯飞星火](http://xinghuo.xfyun.cn/)                                               | 支持   | 即将推出  |                                         |
+| [月之暗面-Kimi](https://kimi.moonshot.cn/)                                         | 支持   | 无 API |                                         |
+| [Llama 2 13B 和 70B](https://ai.meta.com/llama/)                                | 支持   | 无 API | todo                                    |
+| [MOSS](https://moss.fastnlp.top/)                                              | 支持   | 无 API | todo                                    |
+| [Perplexity](https://www.perplexity.ai/)                                       | 支持   | 无     | todo                                    |
+| [Phind](https://www.phind.com/)                                                | 支持   | 无 API | todo                                    |
+| [Pi](https://pi.ai)                                                            | 支持   | 无 API | todo                                    |
+| [Poe](https://poe.com/)                                                        | 支持   | 即将推出  | todo                                    |
+| [天工](https://neice.tiangong.cn/)                                               | 支持   | 即将推出  | todo                                    |
+| [通义千问](http://tongyi.aliyun.com/)                                              | 支持   | 即将推出  | todo                                    |
+| [Vicuna 13B 和 33B](https://lmsys.org/blog/2023-03-30-vicuna/)                  | 支持   | 无 API | 不需要帐号           todo                    |
+| [WizardLM 70B](https://github.com/nlpxucan/WizardLM)                           | 支持   | 无 API | todo                                    |
+| [YouChat](https://you.com/)                                                    | 支持   | 无     | todo                                    |
+| [You](https://you.com/)                                                        | 支持   | 无 API | todo                                    |
+| [Zephyr](https://huggingface.co/spaces/HuggingFaceH4/zephyr-chat)              | 支持   | 无     | todo                                    |
+| [Mistral]()             | 支持   | 无     | todo                                    |
+
+
 阶跃星辰 (跃问StepChat) 接口转API [step-free-api](https://github.com/LLM-Red-Team/step-free-api)
 
 阿里通义 (Qwen) 接口转API [qwen-free-api](https://github.com/LLM-Red-Team/qwen-free-api)
