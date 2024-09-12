@@ -79,6 +79,13 @@
         </plugins>
         <resources>
             <resource>
+                <directory>${project.basedir}/docs</directory>  <!-- 根目录，也就是上一目录 -->
+                <includes>
+                    <include>**/*</include>  <!-- 包含文件 -->
+                </includes>
+                <filtering>false</filtering>  <!-- 关闭过滤，以避免内容被替换 -->
+            </resource>
+            <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
