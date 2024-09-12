@@ -1,4 +1,4 @@
-package com.shengding.shengdingllm.interfaces.impl;
+package com.shengding.shengdingllm.interfaces;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;

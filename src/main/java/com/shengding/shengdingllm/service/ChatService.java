@@ -6,7 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.api.request.ChatRequest;
 import com.shengding.shengdingllm.api.request.Message;
 import com.shengding.shengdingllm.cosntant.ChatMessageRoleEnum;
+import com.shengding.shengdingllm.helper.LLMContext;
 import com.shengding.shengdingllm.helper.SSEEmitterHelper;
+import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import com.shengding.shengdingllm.vo.ChatSseResponse;
 import com.shengding.shengdingllm.vo.LLMBuilderProperties;
@@ -15,6 +17,7 @@ import com.zhouzifei.cache.FileCacheEngine;
 import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -29,6 +32,9 @@ public class ChatService {
 
     @Resource
     private SSEEmitterHelper sseEmitterHelper;
+
+    @Autowired
+    private LLMContext llmContext;
 
 
     /**
@@ -171,5 +177,10 @@ public class ChatService {
 //        }
         // 对话合法，返回true
         return true;
+    }
+
+    public void sendMessage(String modelName, String phone) {
+        AbstractLLMService abstractLLMService = llmContext.getLLMService(modelName);
+        abstractLLMService.sendMessage(phone);
     }
 }

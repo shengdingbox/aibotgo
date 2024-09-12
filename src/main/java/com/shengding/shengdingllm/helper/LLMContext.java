@@ -24,6 +24,11 @@ public class LLMContext {
 
 
     public AbstractLLMService getLLMService(String modelName, String accessToken) {
+        AbstractLLMService service = getLLMService(modelName);
+        service.setAccess_token(accessToken);
+        return service;
+    }
+    public AbstractLLMService getLLMService(String modelName) {
         Map<String, AbstractLLMService> beansOfType = applicationContext.getBeansOfType(AbstractLLMService.class);
         Map<String, AbstractLLMService> collect = beansOfType.values().stream().collect(Collectors.toMap(AbstractLLMService::getMODEL_NAME, service -> service, (oldValue, newValue) -> oldValue));
         AbstractLLMService service = collect.get(modelName);
@@ -31,7 +36,6 @@ public class LLMContext {
             log.warn("︿︿︿ Can not find {}, use the default model GPT_3_5_TURBO ︿︿︿", modelName);
             throw new BaseException(ErrorCode.B_LLM_SERVICE_DISABLED, modelName);
         }
-        service.setAccess_token(accessToken);
         service.setMODEL_NAME(modelName);
         return service;
     }

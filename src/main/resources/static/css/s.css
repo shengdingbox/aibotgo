@@ -1,0 +1,19 @@
+*,body{
+	margin:0;
+	padding:0;
+}
+.por{
+	position: relative;
+}
+.poa{
+	position: absolute;
+}
+.dis-f{
+	display: flex;
+}
+.dis-no{
+	display: none;
+}
+.ov-no{
+	overflow: hidden;
+}

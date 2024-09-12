@@ -3,9 +3,11 @@ package com.shengding.shengdingllm.interfaces.api;
 import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
+import com.shengding.shengdingllm.interfaces.EventSourceStreamListener;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
+@Service
 public class Qihoo360LLMService extends AbstractLLMService {
 
     private final OkHttpClient client = new OkHttpClient.Builder()
@@ -34,7 +37,7 @@ public class Qihoo360LLMService extends AbstractLLMService {
         pairs.put("cookie", access_token);
         pairs.put("pragma", "no-cache");
         pairs.put("priority", "u=1, i");
-        pairs.put("referer", "https://chat.360.com/chat/498b00734d81b13a");
+        pairs.put("referer", BASE_URL+"/chat/498b00734d81b13a");
         pairs.put("sec-ch-ua", "Chromium\";v=\"128\", \"Not;A=Brand\";v=\"24\", \"Google Chrome\";v=\"128");
         pairs.put("sec-ch-ua-mobile", "?0");
         pairs.put("sec-ch-ua-platform", "macOS");

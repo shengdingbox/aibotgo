@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误页面</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2; /* 灰色背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .error-container {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+        }
+        h1 {
+            color: #ff4d4f; /* 红色标题 */
+            font-size: 24px;
+        }
+        p {
+            font-size: 18px;
+            color: #333; /* 深灰色文字 */
+            margin: 10px 0;
+        }
+        a {
+            color: #007bff; /* 蓝色链接 */
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script type="text/javascript">
+        // 获取 URL 参数中的错误信息
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // 页面加载完成后显示错误信息，并在 5 秒后跳转到首页
+        window.onload = function() {
+            const errorMessage = getQueryParam('errorMessage');  // 从 URL 获取错误信息
+            if (errorMessage) {
+                document.getElementById('error-message').innerText = decodeURIComponent(errorMessage);
+            }
+
+            // 5 秒后跳转到首页
+            setTimeout(function() {
+                window.location.href = '/';
+            }, 5000);
+        }
+    </script>
+</head>
+<body>
+<div class="error-container">
+    <h1>发生错误！</h1>
+    <p id="error-message">加载错误信息...</p> <!-- 显示错误信息 -->
+    <p>页面将在 5 秒钟后跳转到首页。如果没有跳转，请 <a href="/">点击这里</a>。</p>
+</div>
+</body>
+</html>

@@ -5,11 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
+import com.shengding.shengdingllm.interfaces.EventSourceStreamListener;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import io.micrometer.common.lang.Nullable;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.function.BiConsumer;
 
 import static com.shengding.shengdingllm.cosntant.AdiConstant.CHAT_IO;
 
+@Service
 public class ChatGLMLLMService extends AbstractLLMService {
     private static final String GLM3 = "GLM-3";
     private static final String GLM4 = "GLM-4";

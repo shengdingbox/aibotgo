@@ -1,9 +1,10 @@
-package com.shengding.shengdingllm.interfaces.api;
+package com.shengding.shengdingllm.interfaces.api.proxy;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
+import com.shengding.shengdingllm.interfaces.EventSourceStreamListener;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import okhttp3.*;
 import okhttp3.sse.EventSource;

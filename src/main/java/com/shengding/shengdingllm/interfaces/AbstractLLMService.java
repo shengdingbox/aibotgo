@@ -140,4 +140,8 @@ public abstract class AbstractLLMService {
         }, json);
         System.out.println(json);
     }
+
+    public  void sendMessage(String phone){
+
+    }
 }

@@ -47,8 +47,9 @@ public class ChatController {
     }
 
 
-    @PostMapping("/session")
-    public String index(String message) {
+    @PostMapping("/sendMessage")
+    public String sendMessage(String modelName,String phone) {
+        chatService.sendMessage(modelName,phone);
         return "{status: \"Success\", message: \"\", data: {auth: false, model: \"ChatGPTUnofficialProxyAPI\"}}";
     }
 

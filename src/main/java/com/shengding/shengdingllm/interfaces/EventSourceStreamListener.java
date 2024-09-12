@@ -1,4 +1,4 @@
-package com.shengding.shengdingllm.interfaces.api;
+package com.shengding.shengdingllm.interfaces;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

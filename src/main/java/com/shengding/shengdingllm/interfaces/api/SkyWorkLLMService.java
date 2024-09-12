@@ -8,6 +8,7 @@ import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import okhttp3.*;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.function.BiConsumer;
 
 import static com.shengding.shengdingllm.cosntant.AdiConstant.CHAT_IO;
 
+@Service
 public class SkyWorkLLMService extends AbstractLLMService {
 
     public SkyWorkLLMService() {

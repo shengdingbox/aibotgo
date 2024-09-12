@@ -71,6 +71,11 @@ public class KimiLLMService extends AbstractLLMService {
         return available;
     }
 
+    @Override
+    public void sendMessage(String phone) {
+
+    }
+
     private void refreshTokens() throws IOException {
         String refreshUrl = BASE_URL + "/api/auth/token/refresh";
         Request.Builder url = new Request.Builder()

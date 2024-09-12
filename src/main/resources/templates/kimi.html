@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-height: 600px;
+            width: 600px;
+            margin: 20vh auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0069d9;
+        }
+
+        .qr-code {
+            text-align: right;
+            margin-top: 10px;
+            width: 100px;
+        }
+
+        .qr-code img {
+            width: 100%;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>登录</h1>
+    <div class="error-message" style="width: 300px">
+        <form action="/login" method="post">
+            <label for="phone">手机号码：</label>
+            <input type="text" id="phone" name="phone" placeholder="+86">
+            <button type="submit">登录</button>
+            <label for="code">验证码：</label>
+            <input type="password" id="code" name="code" placeholder="请输入验证码">
+            <button type="submit">登录</button>
+        </form>
+    </div>
+    <div class="error-message">
+        <p>使用微信扫码登录</p>
+        <div class="qr-code">
+            <img src="https://bj.bcebos.com/qr-code/24091211c5d8570d91e7.jpg" alt="微信扫码登录">
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
