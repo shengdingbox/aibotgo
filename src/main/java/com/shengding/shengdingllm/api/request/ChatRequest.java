@@ -12,8 +12,8 @@ public class ChatRequest {
 
     private String model;
     private List<Message> messages = new ArrayList<>();
-    private Boolean stream;
-    private Boolean use_search;
+    private boolean stream;
+    private boolean use_search;
 
     public Message getSystemMessage() {
         return messages.stream().filter(message -> ChatMessageRoleEnum.SYSTEM.getValue().equals(message.getRole())).findFirst().orElse(new Message());

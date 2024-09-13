@@ -11,7 +11,9 @@ public enum ChatMessageRoleEnum {
     USER("user"),
     SYSTEM("system"),
 
-    ASSISTANT("assistant");
+    ASSISTANT("assistant"),
+
+    FUNCTION("function");
 
     private final String value;
 }
