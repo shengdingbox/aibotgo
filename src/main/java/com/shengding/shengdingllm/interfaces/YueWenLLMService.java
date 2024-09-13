@@ -1,6 +1,7 @@
 package com.shengding.shengdingllm.interfaces;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shengding.shengdingllm.vo.AssistantChatParams;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -8,8 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
-public class YueWenLLMService {
+public class YueWenLLMService extends AbstractLLMService{
 
 //    public YueWenLLMService() {
 //        MODE_NAME = "step";
@@ -102,30 +104,99 @@ public class YueWenLLMService {
         YueWenLLMService yueWenLLMService = new YueWenLLMService();
         yueWenLLMService.requestToken("fcd05478c979787b8bab09e02658f315da7e25e2@eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3RpdmF0ZWQiOnRydWUsImFnZSI6MSwiYmFuZWQiOmZhbHNlLCJjcmVhdGVfYXQiOjE3MjYyMDkxMjIsImV4cCI6MTcyNjIxMDkyMiwibW9kZSI6Miwib2FzaXNfaWQiOjE0NTc3NTY0MjYzMjQ2MjMzNiwidmVyc2lvbiI6Mn0.DP1apLM3IUaifpLdW6n8uzKNZUKRSxhrdjylXtEuU-w...eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfaWQiOjEwMjAwLCJkZXZpY2VfaWQiOiJmY2QwNTQ3OGM5Nzk3ODdiOGJhYjA5ZTAyNjU4ZjMxNWRhN2UyNWUyIiwiZXhwIjoxNzI4ODAxMTIyLCJvYXNpc19pZCI6MTQ1Nzc1NjQyNjMyNDYyMzM2LCJwbGF0Zm9ybSI6IndlYiIsInZlcnNpb24iOjJ9.OZ6NE7US1Ri_Kruey0Buk_9w-UZLevLJUWqtW9QD3yE");
     }
+
+
+    /**
+     * 流式对话补全
+     *
+     * @param model 模型名称
+     * @param messages 参考gpt系列消息格式，多轮对话请完整提供上下文
+     * @param refreshToken 用于刷新access_token的refresh_token
+     * @param useSearch 是否开启联网搜索
+     * @param retryCount 重试次数
+     */
+    @Override
+    protected void sendPrompt(AssistantChatParams assistantChatParams, BiConsumer<Object, Map<String, Object>> onUpdateResponse, Object callbackParam) {
+
+
+//            return (async () => {
+//                    logger.info(messages);
+//
+//            // 提取引用文件URL并上传step获得引用的文件ID列表
+//    const refFileUrls = extractRefFileUrls(messages);
+//    const refs = refFileUrls.length
+//                    ? await Promise.all(
+//                    refFileUrls.map((fileUrl) => uploadFile(fileUrl, refreshToken))
+//        )
+//      : [];
+
+            // 创建会话
+        createChatContext()
+    const convId = await cr("新会话", refreshToken);
+
+            // 请求流
+    const { deviceId, token } = await acquireToken(refreshToken);
+    const result = await axios.post(
+                    `https://yuewen.cn/api/proto.chat.v1.ChatMessageService/SendMessageStream`,
+            messagesPrepare(convId, messages, refs),
+                    {
+                            headers: {
+                "Content-Type": "application/connect+json",
+                        Cookie: generateCookie(deviceId, token),
+                        "Oasis-Webid": deviceId,
+                        Referer: `https://yuewen.cn/chats/${convId}`,
+          ...FAKE_HEADERS,
+            },
+            // 120秒超时
+            timeout: 120000,
+                    validateStatus: () => true,
+                    responseType: "stream",
+      }
+    );
+
+    const streamStartTime = util.timestamp();
+            // 创建转换流将消息格式转换为gpt兼容格式
+            return createTransStream(model, convId, result.data, () => {
+                    logger.success(
+                            `Stream has completed transfer ${util.timestamp() - streamStartTime}ms`
+      );
+            // 流传输结束后异步移除会话，如果消息不合规，此操作可能会抛出数据库错误异常，请忽略
+            removeConversation(convId, refreshToken).catch((err) =>
+                    console.error(err)
+      );
+    });
+  })().catch((err) => {
+            if (retryCount < MAX_RETRY_COUNT) {
+                logger.error(`Stream response error: ${err.message}`);
+                logger.warn(`Try again after ${RETRY_DELAY / 1000}s...`);
+                return (async () => {
+                        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+                return createCompletionStream(
+                        model,
+                        messages,
+                        refreshToken,
+                        useSearch,
+                        retryCount + 1
+                );
+      })();
+            }
+            throw err;
+  });
+        }
+    }
+
+    @Override
+    protected JSONObject createChatContext(String chatId) {
+        return null;
+    }
+
+    @Override
+    protected boolean checkAvailability() {
+        return false;
+    }
 }
 
-//        /**
-//         * 获取缓存中的access_token
-//         *
-//         * 避免短时间大量刷新token，未加锁，如果有并发要求还需加锁
-//         *
-//         * @param refreshToken 用于刷新access_token的refresh_token
-//         */
-//        async function acquireToken(refreshToken:string){
-//        let result=accessTokenMap.get(refreshToken);
-//        if(!result){
-//        result=await requestToken(refreshToken);
-//        accessTokenMap.set(refreshToken,result);
-//        }
-//        if(util.unixTimestamp()>result.refreshTime){
-//        result=await requestToken(refreshToken);
-//        accessTokenMap.set(refreshToken,result);
-//        }
-//        return{
-//        deviceId:result.deviceId,
-//        token:result.accessToken+"..."+result.refreshToken,
-//        };
-//        }
+
 //
 //        /**
 //         * 创建会话

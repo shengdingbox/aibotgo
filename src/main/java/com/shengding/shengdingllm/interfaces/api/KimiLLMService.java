@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.api.request.Message;
 import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
+import com.shengding.shengdingllm.interfaces.EventSourceStreamListener;
 import com.shengding.shengdingllm.utils.ResponseManager;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import io.micrometer.common.lang.Nullable;
@@ -98,7 +99,6 @@ public class KimiLLMService extends AbstractLLMService {
 
     @Override
     public void sendPrompt(AssistantChatParams assistantChatParams, BiConsumer<Object, Map<String, Object>> onUpdateResponse, Object callbackParam) {
-        EventSource.Factory factory = EventSources.createFactory(client);
         JSONObject context = createChatContext(assistantChatParams.getMessageId());
         JSONObject jsonObject = new JSONObject();
         JSONObject message = new JSONObject();
@@ -125,13 +125,7 @@ public class KimiLLMService extends AbstractLLMService {
 
         // 自定义监听器
         final StringBuffer beginning = new StringBuffer();
-        EventSourceListener eventSourceListener = new EventSourceListener() {
-
-            @Override
-            public void onOpen(EventSource eventSource, Response response) {
-                super.onOpen(eventSource, response);
-            }
-
+        new EventSourceStreamListener(client, request) {
             @Override
             public void onEvent(EventSource eventSource, @Nullable String id, @Nullable String type, String eventData) {
                 JSONObject jsonData = JSONObject.parseObject(eventData);
@@ -158,26 +152,8 @@ public class KimiLLMService extends AbstractLLMService {
                 } else {
                     onUpdateResponse.accept(callbackParam, createResponse(chatId, beginning.toString(), false));
                 }
-                super.onEvent(eventSource, id, type, eventData);
-            }
-
-            @Override
-            public void onFailure(EventSource eventSource, Throwable t, Response response) {
-                if (t != null) {
-                    System.err.println("Error occurred: " + t.getMessage());
-                }
-                if (response != null) {
-                    System.err.println("Response code: " + response.code() + response.body());
-                }
-                super.onFailure(eventSource, t, response);
-            }
-
-            @Override
-            public void onClosed(EventSource eventSource) {
-                super.onClosed(eventSource);
             }
         };
-        factory.newEventSource(request, eventSourceListener);
     }
 
     @Override
