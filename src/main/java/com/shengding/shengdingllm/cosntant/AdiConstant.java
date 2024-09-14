@@ -29,6 +29,7 @@ public class AdiConstant {
         public static String TONGYI = "TONGYI";
         public static String YOUCHAT = "YOUCHAT";
         public static String PERPLEXITY = "PERPLEXITY";
+        public static String MINIMAX = "MINIMAX";
     }
 
     public static class ModelType {
