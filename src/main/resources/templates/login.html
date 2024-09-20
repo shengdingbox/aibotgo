@@ -1,69 +1,143 @@
 <!DOCTYPE html>
-<html style="width:100%;height:100%;">
+<html xmlns:th="http://www.thymeleaf.org" style="width:100%;height:100%;">
 <head>
 	<meta charset="utf-8">
 	<title>全屏背景登录模板</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-	<link rel="stylesheet" href="./css/index.css" type="text/css" />
-	<script src="./js/jquery.min.js"></script>
-	
+	<link rel="stylesheet" th:href="@{/css/index.css}" type="text/css" />
+	<script th:src="@{/js/jquery.min.js}"></script>
 </head>
-	<body>
-		<div class="logo">
-			<img src="img/logo.png">
-		</div>
-		<div class="main">
-			<div class="nav">
-				<div class="left">
-					<div class="title">验证码登录</div>
-					<div class="inp-nav">
-						<div class="inp-v">
-							<div class="phone1">+86</div>
-							<input type="text" class="inp1" value="" placeholder="手机号">
-						</div>
-						<div class="inp-v">
-							<input type="text" class="inp2" value="" placeholder="手机号">
-							<div class="yzm">获取验证码</div>
-						</div>
-						<div class="tis">
-							<a>登录即同意</a>
-							<a>《用户协议》</a>
-							<a>和</a>
-							<a>《隐私政策》</a>
-						</div>
-						<div class="dl">登录</div>
+<body>
+	<div class="logo">
+		<img th:src="@{/img/logo.png}">
+	</div>
+	<div class="main">
+		<div class="nav">
+			<div class="left">
+				<div class="title">验证码登录</div>
+				<div class="inp-nav">
+					<div class="inp-v">
+						<div class="phone1">+86</div>
+						<input type="text" class="inp1" id="phone" placeholder="手机号">
 					</div>
-				</div>
-				<div class="center"></div>
-				<div class="right">
-					<div class="saoma">扫码登录</div>
-					<div class="ewm">
-						<img src="https://bj.bcebos.com/qr-code/24091211c5d8570d91e7.jpg">
+					<div class="inp-v">
+						<input type="text" class="inp2" id="verificationCode" placeholder="验证码">
+						<div class="yzm" id="getVerificationCode">获取验证码</div>
 					</div>
-					<div class="djgh">点击更换</div>
+					<div class="tis">
+						<a>登录即同意</a>
+						<a>《用户协议》</a>
+						<a>和</a>
+						<a>《隐私政策》</a>
+					</div>
+					<div class="dl" id="loginButton">登录</div>
 				</div>
 			</div>
-			<div class="bottom">
-				<div class="left2">
-					<div class="left2-v">
-						<img src="img/douyin.png">
-						<div class="value">抖音登录</div>
-					</div>
-					<div class="left2-v">
-						<img src="img/WeChat.png">
-						<div class="value">微信登录</div>
-					</div>
-					<div class="left2-v">
-						<img src="img/qq.png">
-						<div class="value">QQ登录</div>
-					</div>
-					<div class="left2-v">
-						<img src="img/anquan.png">
-						<div class="value">密码登录</div>
-					</div>
+			<div class="center"></div>
+			<div class="right">
+				<div class="saoma">扫码登录</div>
+				<div class="ewm">
+					<img th:src="${imagesUrl}">
 				</div>
-				<div class="right2">登录遇到问题?</div>
+				<div class="djgh" id="changeQRCode">点击更换</div>
 			</div>
 		</div>
-	</body>
+		<div class="bottom">
+			<div class="left2">
+				<div class="left2-v">
+					<img th:src="@{/img/douyin.png}">
+					<div class="value">抖音登录</div>
+				</div>
+				<div class="left2-v">
+					<img th:src="@{/img/WeChat.png}">
+					<div class="value">微信登录</div>
+				</div>
+				<div class="left2-v">
+					<img th:src="@{/img/qq.png}">
+					<div class="value">QQ登录</div>
+				</div>
+				<div class="left2-v">
+					<img th:src="@{/img/anquan.png}">
+					<div class="value">密码登录</div>
+				</div>
+			</div>
+			<div class="right2">登录遇到问题?</div>
+		</div>
+	</div>
+
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			var type = /*[[${type}]]*/ 'default';
+
+			$('#getVerificationCode').click(function() {
+				var phone = $('#phone').val();
+				if (!phone) {
+					alert('请输入手机号');
+					return;
+				}
+				
+				$.ajax({
+					url: '/v1/auth/sendMsg',
+					method: 'POST',
+					data: {
+						phone: phone,
+						type: type
+					},
+					success: function(response) {
+						alert('验证码已发送，请注意查收');
+						// 这里可以添加倒计时逻辑，防止用户频繁点击
+					},
+					error: function(error) {
+						alert('发送验证码失败，请稍后重试');
+					}
+				});
+			});
+
+			$('#loginButton').click(function() {
+				var phone = $('#phone').val();
+				var verificationCode = $('#verificationCode').val();
+				
+				if (!phone || !verificationCode) {
+					alert('请输入手机号和验证码');
+					return;
+				}
+				
+				$.ajax({
+					url: '/v1/auth/login',
+					method: 'POST',
+					data: {
+						type: type,
+						phone: phone,
+						verificationCode: verificationCode
+					},
+					success: function(response) {
+						// 处理登录成功的逻辑
+						alert('登录成功');
+						// 可以根据需要进行页面跳转
+						// window.location.href = '/dashboard';
+					},
+					error: function(error) {
+						// 处理登录失败的逻辑
+						alert('登录失败，请检查手机号和验证码是否正确');
+					}
+				});
+			});
+
+			$('#changeQRCode').click(function() {
+				// 这里添加更换二维码的逻辑
+				// 例如：重新请求二维码图片
+				$.ajax({
+					url: '/v1/auth/refreshQRCode',
+					method: 'GET',
+					success: function(response) {
+						$('.ewm img').attr('src', response.newImageUrl);
+					},
+					error: function(error) {
+						alert('更新二维码失败，请稍后重试');
+					}
+				});
+			});
+		});
+	</script>
+</body>
 </html>

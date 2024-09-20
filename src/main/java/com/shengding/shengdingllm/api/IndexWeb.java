@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.io.IOException;
 
 @Controller
-public class    IndexWeb {
+public class IndexWeb {
 
     /**
      * 主页
@@ -17,11 +17,13 @@ public class    IndexWeb {
     public String index(Model model) throws IOException {
         return "index";
     }
+
     /**
      * 主页
      */
     @GetMapping("/login.html")
     public String getLog(Model model) {
+        model.addAttribute("type", "kimi");
         return "login";
     }
 }
