@@ -5,9 +5,11 @@ import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.interfaces.EventSourceStreamListener;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Map;
@@ -16,7 +18,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 import static com.shengding.shengdingllm.cosntant.AdiConstant.CHAT_IO;
-
+@Slf4j
+@Service
 public class MistralLLMService extends AbstractLLMService {
 
 
@@ -100,10 +103,10 @@ public class MistralLLMService extends AbstractLLMService {
                         }
                     }
                 } else {
-                    System.err.println("Error MistralBot createNewChat: Unexpected response " + response);
+                    log.error("Error MistralBot createNewChat: Unexpected response " + response);
                 }
             } catch (Exception e) {
-                System.err.println("Error creating ChatGLM context: " + e.getMessage());
+                log.error("Error creating ChatGLM context: " + e.getMessage());
             }
         }
         json.put(CHAT_IO, chatId);
@@ -121,7 +124,7 @@ public class MistralLLMService extends AbstractLLMService {
                 available = true;
             }
         } catch (IOException e) {
-            System.err.println("Error MistralBot checkAvailability: " + e.getMessage());
+            log.error("Error MistralBot checkAvailability: " + e.getMessage());
         }
 
         return available;

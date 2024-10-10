@@ -66,7 +66,7 @@
 //                available = true;
 //            }
 //        } catch (IOException e) {
-//            System.err.println("Error checking Poe login status: " + e.getMessage());
+//            log.error("Error checking Poe login status: " + e.getMessage());
 //        }
 //
 //        return available;

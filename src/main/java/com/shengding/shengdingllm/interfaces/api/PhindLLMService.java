@@ -85,7 +85,7 @@
 //
 //            @Override
 //            public void onFailure(EventSource eventSource, Throwable t, Response response) {
-//                System.err.println("Error during SSE connection: " + t.getMessage());
+//                log.error("Error during SSE connection: " + t.getMessage());
 //                onUpdateResponse.accept("Error during SSE connection", true);
 //            }
 //        };
@@ -202,8 +202,8 @@
 //
 //    public static void main(String[] args) {
 //        new PhindLLMService().sendPrompt("你好?", (text, isDone) -> {
-//            System.out.println("Response: " + text);
-//            System.out.println("Done: " + isDone);
+//            log.info("Response: " + text);
+//            log.info("Done: " + isDone);
 //        }, null);
 //    }
 //}

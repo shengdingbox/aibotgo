@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -11,12 +12,14 @@ import okhttp3.RequestBody;
 import okhttp3.sse.EventSource;
 import okhttp3.sse.EventSourceListener;
 import okhttp3.sse.EventSources;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
-
+@Slf4j
+@Service
 public class PiLLMService extends AbstractLLMService {
 
     private static final ReentrantLock lock = new ReentrantLock();
@@ -67,7 +70,7 @@ public class PiLLMService extends AbstractLLMService {
             EventSources.createFactory(client).newEventSource(request, listener);
 
         } catch (Exception e) {
-            System.err.println("Error in sendPrompt: " + e.getMessage());
+            log.error("Error in sendPrompt: " + e.getMessage());
         } finally {
             lock.unlock();
         }
@@ -102,7 +105,7 @@ public class PiLLMService extends AbstractLLMService {
             String text = data.replaceAll(".*\"text\":\"(.*?)\".*", "$1");
             return text;
         } catch (Exception e) {
-            System.err.println("Error parsing SSE data: " + e.getMessage());
+            log.error("Error parsing SSE data: " + e.getMessage());
             return "";
         }
     }

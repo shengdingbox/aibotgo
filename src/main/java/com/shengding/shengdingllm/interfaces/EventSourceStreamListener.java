@@ -1,5 +1,6 @@
 package com.shengding.shengdingllm.interfaces;
 
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -9,6 +10,7 @@ import okhttp3.sse.EventSources;
 
 import java.io.IOException;
 
+@Slf4j
 public abstract class EventSourceStreamListener extends EventSourceListener {
 
 
@@ -36,15 +38,15 @@ public abstract class EventSourceStreamListener extends EventSourceListener {
     @Override
     public void onFailure(EventSource eventSource, Throwable t, Response response) {
         if (t != null) {
-            System.err.println("Error occurred: " + t.getMessage());
+            log.error("Error occurred: " + t.getMessage());
         }
         if (response != null) {
             try {
-                System.out.println(response.body().source().readUtf8Line());
+                log.info(response.body().source().readUtf8Line());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            System.err.println("Response code: " + response.code());
+            log.error("Response code: " + response.code());
         }
         super.onFailure(eventSource, t, response);
     }

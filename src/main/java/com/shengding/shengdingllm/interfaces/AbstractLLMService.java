@@ -136,12 +136,11 @@ public abstract class AbstractLLMService {
                     log.error("stream onNext error", e);
                 }
             }
-            System.out.println("Response: " + response);
+            log.info("Response: " + response);
         }, json);
-        System.out.println(json);
     }
 
-    public  void sendMessage(String phone){
+    public void sendMessage(String phone) {
 
     }
 }

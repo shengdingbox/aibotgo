@@ -30,6 +30,7 @@ public class AdiConstant {
         public static String YOUCHAT = "YOUCHAT";
         public static String PERPLEXITY = "PERPLEXITY";
         public static String MINIMAX = "MINIMAX";
+        public static String DEEPSEEK_CHAT = "DEEPSEEK_CHAT";
     }
 
     public static class ModelType {

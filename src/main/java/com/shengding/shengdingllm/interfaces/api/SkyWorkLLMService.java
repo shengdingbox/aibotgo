@@ -6,6 +6,7 @@ import com.shengding.shengdingllm.api.request.Message;
 import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 import static com.shengding.shengdingllm.cosntant.AdiConstant.CHAT_IO;
-
+@Slf4j
 @Service
 public class SkyWorkLLMService extends AbstractLLMService {
 
@@ -101,7 +102,7 @@ public class SkyWorkLLMService extends AbstractLLMService {
                     json.put("session_id", data.getJSONObject("resp_data").getString("session_id"));
                 }
             } catch (Exception e) {
-                System.err.println("Error creating SkyWorkBot context: " + e.getMessage());
+                log.error("Error creating SkyWorkBot context: " + e.getMessage());
             }
         }
         json.put(CHAT_IO, chatId);
@@ -149,7 +150,7 @@ public class SkyWorkLLMService extends AbstractLLMService {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error checking SkyWorkBot login status: " + e.getMessage());
+            log.error("Error checking SkyWorkBot login status: " + e.getMessage());
         }
 
         return available;
@@ -162,7 +163,7 @@ public class SkyWorkLLMService extends AbstractLLMService {
                 new Message("你好，SkyWorkBot")
         ));
         new SkyWorkLLMService().sendPrompt(assistantChatParams, (Object o, Map<String, Object> map) -> {
-            System.out.println(map.get("content"));
+            log.info("{}",map.get("content"));
         }, null);
     }
 }

@@ -1,6 +1,5 @@
 package com.shengding.shengdingllm.interfaces.api;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.api.request.Message;
 import com.shengding.shengdingllm.cosntant.AdiConstant;
@@ -9,6 +8,7 @@ import com.shengding.shengdingllm.interfaces.EventSourceStreamListener;
 import com.shengding.shengdingllm.utils.ResponseManager;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import io.micrometer.common.lang.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 @Service
+@Slf4j
 public class MiniMaxLLMService extends AbstractLLMService {
 
     public MiniMaxLLMService() {
@@ -64,7 +65,7 @@ public class MiniMaxLLMService extends AbstractLLMService {
             available = true;
         } catch (IOException e) {
             available = false;
-            System.err.println("Error checking Kimi login status: " + e.getMessage());
+            log.error("Error checking Kimi login status: " + e.getMessage());
         }
         return available;
     }
@@ -128,7 +129,7 @@ public class MiniMaxLLMService extends AbstractLLMService {
                 } else if ("cmpl".equals(jsonData.getString("event"))) {
                     String string = jsonData.getString("text");
                     beginning.append(string);
-                    System.err.println(beginning);
+                    log.error(String.valueOf(beginning));
                     onUpdateResponse.accept(callbackParam, createResponse(chatId, string, false));
                 } else if ("all_done".equals(jsonData.getString("event"))) {
                     onUpdateResponse.accept(callbackParam, createResponse(chatId, beginning.toString(), true));
@@ -157,11 +158,11 @@ public class MiniMaxLLMService extends AbstractLLMService {
                     JSONObject jsonResponse = JSONObject.parseObject(response.body().string());
                     messageId = jsonResponse.getString("id");
                 } else {
-                    System.err.println("Error checking Spark login status: " + response.message());
+                    log.error("Error checking Spark login status: " + response.message());
                     throw new RuntimeException("Error creating conversation: " + response.message());
                 }
             } catch (IOException e) {
-                System.err.println("Error creating conversation: " + e.getMessage());
+                log.error("Error creating conversation: " + e.getMessage());
             }
         }
         context.put("chatId", messageId);
@@ -180,7 +181,7 @@ public class MiniMaxLLMService extends AbstractLLMService {
         miniMaxLLMService.sendPrompt(assistantChatParams, manager::handleUpdate, manager);
         try {
             finalResponse = manager.getResponse();
-            System.out.println(finalResponse);
+            log.info(finalResponse);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

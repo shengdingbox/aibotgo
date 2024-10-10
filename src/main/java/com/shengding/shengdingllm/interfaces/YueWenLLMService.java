@@ -2,6 +2,7 @@ package com.shengding.shengdingllm.interfaces;
 
 import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
+@Slf4j
 public class YueWenLLMService extends AbstractLLMService {
 
     OkHttpClient client = new OkHttpClient.Builder()
@@ -73,7 +75,7 @@ public class YueWenLLMService extends AbstractLLMService {
     public void requestToken() {
         // 如果已经在队列中，则直接加入队列等待结果
         // 记录日志
-        System.out.println("刷新token: " + access_token);
+        log.info("刷新token: " + access_token);
         // 创建请求
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
@@ -157,7 +159,7 @@ public class YueWenLLMService extends AbstractLLMService {
 
             @Override
             public void onEvent(EventSource eventSource, String id, String type, String eventData) {
-                System.out.println(eventData);
+                log.info(eventData);
             }
         };
 //    const convId = await cr("新会话", refreshToken);
@@ -219,11 +221,11 @@ public class YueWenLLMService extends AbstractLLMService {
                     JSONObject jsonResponse = JSONObject.parseObject(response.body().string());
                     messageId = jsonResponse.getString("chatId");
                 } else {
-                    System.err.println("Error checking Spark login status: " + response.message());
+                    log.error("Error checking Spark login status: " + response.message());
                     throw new RuntimeException("Error creating conversation: " + response.message());
                 }
             } catch (IOException e) {
-                System.err.println("Error creating conversation: " + e.getMessage());
+                log.error("Error creating conversation: " + e.getMessage());
             }
         }
         context.put("chatId", messageId);

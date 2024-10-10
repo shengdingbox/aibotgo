@@ -9,6 +9,7 @@ import com.shengding.shengdingllm.exception.ErrorCode;
 import com.shengding.shengdingllm.service.ChatService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequestMapping("/v1/auth")
+@Slf4j
 public class AuthController {
 
     @Autowired
@@ -54,7 +56,7 @@ public class AuthController {
                 .body(jsonObject.toJSONString())
                 .header("Content-Type", "application/json")
                 .execute();
-        System.out.println(execute.body());
+        log.info(execute.body());
         return null;
     }
 
@@ -69,7 +71,7 @@ public class AuthController {
                 .body(jsonObject.toJSONString())
                 .header("Content-Type", "application/json")
                 .execute();
-        System.out.println(execute.body());
+        log.info(execute.body());
         return null;
     }
 }

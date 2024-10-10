@@ -8,6 +8,7 @@ import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.interfaces.EventSourceStreamListener;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import io.micrometer.common.lang.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +23,7 @@ import java.util.function.BiConsumer;
 import static com.shengding.shengdingllm.cosntant.AdiConstant.CHAT_IO;
 
 @Service
+@Slf4j
 public class ChatGLMLLMService extends AbstractLLMService {
     private static final String GLM3 = "GLM-3";
     private static final String GLM4 = "GLM-4";
@@ -63,7 +65,7 @@ public class ChatGLMLLMService extends AbstractLLMService {
                 available = "success".equals(data.get("message"));
             }
         } catch (Exception e) {
-            System.err.println("Error checking ChatGLM login status: " + e.getMessage());
+            log.error("Error checking ChatGLM login status: " + e.getMessage());
         }
 
         return available;
@@ -235,7 +237,7 @@ public class ChatGLMLLMService extends AbstractLLMService {
                     return jsonObject;
                 }
             } catch (Exception e) {
-                System.err.println("Error creating ChatGLM context: " + e.getMessage());
+                log.error("Error creating ChatGLM context: " + e.getMessage());
             }
         }
         jsonObject.put(CHAT_IO, chatId);

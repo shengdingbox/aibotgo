@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,6 +18,8 @@ import java.util.function.BiConsumer;
 
 import static com.shengding.shengdingllm.cosntant.AdiConstant.CHAT_IO;
 
+@Slf4j
+@Service
 public class MosslLLMService extends AbstractLLMService {
 
     public MosslLLMService() {
@@ -102,7 +106,7 @@ public class MosslLLMService extends AbstractLLMService {
                 JSONObject jsonResponse = JSONObject.parseObject(response.body().string());
                 chatId = jsonResponse.getString("id");
             } catch (IOException e) {
-                System.err.println("Error creating conversation: " + e.getMessage());
+                log.error("Error creating conversation: " + e.getMessage());
             }
         }
         JSONObject jsonObject = new JSONObject();

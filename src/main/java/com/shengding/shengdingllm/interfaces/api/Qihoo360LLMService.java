@@ -5,6 +5,7 @@ import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.interfaces.EventSourceStreamListener;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
-
+@Slf4j
 @Service
 public class Qihoo360LLMService extends AbstractLLMService {
 
@@ -64,7 +65,7 @@ public class Qihoo360LLMService extends AbstractLLMService {
                 available = responseBody.contains("\"message\":\"OK\"");
             }
         } catch (IOException e) {
-            System.err.println("Error checking 360Bot Chat login status: " + e.getMessage());
+            log.error("Error checking 360Bot Chat login status: " + e.getMessage());
         }
 
         return available;
@@ -99,11 +100,11 @@ public class Qihoo360LLMService extends AbstractLLMService {
                 } else if ("100".equals(type)) {
                     // Handle CONVERSATIONID
                     chatId[0] = data.split("####")[1];
-                    System.out.println("Conversation ID: " + chatId);
+                    log.info("Conversation ID: " + chatId);
                 } else if ("101".equals(type)) {
                     // Handle MESSAGEID
                     String messageId = data.split("####")[1];
-                    System.out.println("Message ID: " + messageId);
+                    log.info("Message ID: " + messageId);
                 } else if ("40042".equals(type)) {
                     // Handle unable to answer the user's question
                     responseContent.append(data);

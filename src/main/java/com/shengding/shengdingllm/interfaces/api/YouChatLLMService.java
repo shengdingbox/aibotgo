@@ -10,6 +10,7 @@ import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.utils.ResponseManager;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import io.micrometer.common.lang.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 
+@Slf4j
 public class YouChatLLMService extends AbstractLLMService {
     private static final ReentrantLock lock = new ReentrantLock();
 
@@ -102,10 +104,10 @@ public class YouChatLLMService extends AbstractLLMService {
             @Override
             public void onFailure(EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
                 if (t != null) {
-                    System.err.println("Error occurred: " + t.getMessage());
+                    log.error("Error occurred: " + t.getMessage());
                 }
                 if (response != null) {
-                    System.err.println("Response code: " + response.code());
+                    log.error("Response code: " + response.code());
                 }
                 super.onFailure(eventSource, t, response);
             }
@@ -144,7 +146,7 @@ public class YouChatLLMService extends AbstractLLMService {
         new YouChatLLMService().sendPrompt(assistantChatParams, manager::handleUpdate, manager);
         try {
             finalResponse = manager.getResponse();
-            System.out.println(finalResponse);
+            log.info(finalResponse);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

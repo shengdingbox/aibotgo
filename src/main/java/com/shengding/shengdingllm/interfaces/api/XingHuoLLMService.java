@@ -45,7 +45,7 @@ public class XingHuoLLMService extends AbstractLLMService {
             Map<String, Object> responseMap = JSONUtil.toBean(response, Map.class);
             available = MapUtil.getBool(responseMap, "flag", false);
         } catch (Exception e) {
-            System.err.println("Error checking Spark login status: " + e.getMessage());
+            log.error("Error checking Spark login status: " + e.getMessage());
         }
         return available;
     }
@@ -64,10 +64,10 @@ public class XingHuoLLMService extends AbstractLLMService {
                 if (MapUtil.getBool(responseMap, "flag") && MapUtil.getInt(responseMap, "code", -1) == 0) {
                     chatId = MapUtil.getStr((Map<String, Object>) responseMap.get("data"), "id");
                 } else {
-                    System.err.println("Error creating conversation: " + responseMap.get("desc"));
+                    log.error("Error creating conversation: " + responseMap.get("desc"));
                 }
             } catch (Exception e) {
-                System.err.println("Error creating conversation: " + e.getMessage());
+                log.error("Error creating conversation: " + e.getMessage());
             }
         }
         jsonObject.put("chatId", chatId != null ? chatId : "0");

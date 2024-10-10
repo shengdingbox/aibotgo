@@ -21,7 +21,7 @@
 //        new KimiLLMService().sendPrompt("你好", manager::handleUpdate, manager);
 //        try {
 //            finalResponse = manager.getResponse();
-//            System.out.println(finalResponse);
+//            log.info(finalResponse);
 //        } catch (InterruptedException e) {
 //            throw new RuntimeException(e);
 //        }

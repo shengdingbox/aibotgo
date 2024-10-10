@@ -1,11 +1,11 @@
 package com.shengding.shengdingllm.interfaces.api;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shengding.shengdingllm.api.request.Message;
 import com.shengding.shengdingllm.cosntant.AdiConstant;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
 import com.shengding.shengdingllm.interfaces.EventSourceStreamListener;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.sse.EventSource;
 import okhttp3.sse.EventSourceListener;
@@ -15,14 +15,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 
 import static com.shengding.shengdingllm.cosntant.AdiConstant.CHAT_IO;
-
+@Slf4j
 @Service
 public class TongYiLLMService extends AbstractLLMService {
 
@@ -103,7 +102,7 @@ public class TongYiLLMService extends AbstractLLMService {
 
                     if ("".equals(data)) {
                         // Handle empty response (indicating an error)
-                        System.err.println("Received empty response");
+                        log.error("Received empty response");
                     } else {
                         responseContent.append(data);
                         onUpdateResponse.accept(callbackParam, createResponse("", data, false));
@@ -116,7 +115,7 @@ public class TongYiLLMService extends AbstractLLMService {
 
                 @Override
                 public void onFailure(EventSource eventSource, Throwable t, Response response) {
-                    System.err.println("Error during SSE connection: " + t.getMessage());
+                    log.error("Error during SSE connection: " + t.getMessage());
                     onUpdateResponse.accept(callbackParam,createResponse(chatId,"Error during SSE connection", true));
                 }
             };
@@ -124,7 +123,7 @@ public class TongYiLLMService extends AbstractLLMService {
             EventSources.createFactory(client).newEventSource(request, listener);
 
         } catch (Exception e) {
-            System.err.println("Error in sendPrompt: " + e.getMessage());
+            log.error("Error in sendPrompt: " + e.getMessage());
         } finally {
             lock.unlock();
         }
@@ -148,11 +147,11 @@ public class TongYiLLMService extends AbstractLLMService {
                     context.put("sessionId", "extracted-session-id");
                     context.put("parentMsgId", "0");
                 } else {
-                    System.err.println("Error QianWen adding session: " + response.message());
+                    log.error("Error QianWen adding session: " + response.message());
                     context.put("exception", response.message());
                 }
             } catch (IOException e) {
-                System.err.println("Error QianWen adding session: " + e.getMessage());
+                log.error("Error QianWen adding session: " + e.getMessage());
                 context.put("exception", e.getMessage());
             }
         }
@@ -172,10 +171,10 @@ public class TongYiLLMService extends AbstractLLMService {
                 String responseBody = response.body().string();
                 available = responseBody.contains("\"success\":true");
             } else {
-                System.err.println("Error QianWen check login: " + response.message());
+                log.error("Error QianWen check login: " + response.message());
             }
         } catch (IOException e) {
-            System.err.println("Error QianWen check login: " + e.getMessage());
+            log.error("Error QianWen check login: " + e.getMessage());
         }
 
         return available;
