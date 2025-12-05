@@ -42,7 +42,7 @@ public class SSEEmitterHelper {
         abstractLLMService.commonChat(sseAskParams, (response, chatId) -> {
             try {
                 // 处理LLM服务返回的提问结果
-                consumer.accept((String) response, chatId);
+                consumer.accept(response, chatId);
             } catch (Exception e) {
                 // 记录处理过程中的异常
                 log.error("commonProcess error", e);

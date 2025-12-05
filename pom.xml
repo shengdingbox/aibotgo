@@ -63,13 +63,13 @@
             <version>4.12.0</version>
         </dependency>
         <dependency>
-            <groupId>com.zhouzifei</groupId>
-            <artifactId>simpleCache</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
         </dependency>
     </dependencies>
 

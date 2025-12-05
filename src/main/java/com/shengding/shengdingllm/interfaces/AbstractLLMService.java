@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
+import com.shengding.shengdingllm.interfaces.TriConsumer;
 
 import java.io.IOException;
 import java.net.Proxy;

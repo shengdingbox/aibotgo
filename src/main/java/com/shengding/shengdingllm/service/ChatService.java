@@ -1,7 +1,6 @@
 package com.shengding.shengdingllm.service;
 
 import cn.hutool.crypto.digest.DigestUtil;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.shengding.shengdingllm.api.request.ChatRequest;
 import com.shengding.shengdingllm.api.request.Message;
@@ -9,16 +8,15 @@ import com.shengding.shengdingllm.cosntant.ChatMessageRoleEnum;
 import com.shengding.shengdingllm.helper.LLMContext;
 import com.shengding.shengdingllm.helper.SSEEmitterHelper;
 import com.shengding.shengdingllm.interfaces.AbstractLLMService;
+import com.shengding.shengdingllm.utils.FileCacheEngine;
 import com.shengding.shengdingllm.vo.AssistantChatParams;
 import com.shengding.shengdingllm.vo.ChatSseResponse;
 import com.shengding.shengdingllm.vo.LLMBuilderProperties;
 import com.shengding.shengdingllm.vo.SseAskParams;
-import com.zhouzifei.cache.FileCacheEngine;
 import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
